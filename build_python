@@ -1,62 +1,104 @@
 #!/bin/bash
 
-# install python
-
-PYTHON_VERSION=Python-2.7.2
 PREFIX=/afs/cern.ch/user/y/ylevinse/scratch1/python27
 
+# install python
+PYVER_MAJOR=2.7
+PYVER_MINOR=2
+PYVER=${PYVER_MAJOR}.${PYVER_MINOR}
+
+PYTHON_VERSION=Python-${PYVER}
+
 mkdir -p $PREFIX
+download_files() {
+    if [ ! -f $PYTHON_VERSION.tar.bz2 ] 
+    then
+        wget http://www.python.org/ftp/python/${PYVER}/$PYTHON_VERSION.tar.bz2
+    fi
+    
+    if [ ! -f ez_setup.py ] 
+    then
+        wget http://peak.telecommunity.com/dist/ez_setup.py
+    fi
+    
+    if [ ! -f setuptools-0.6c11-py${PYVER_MAJOR}.egg ]
+    then
+        wget http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
+    fi
+}
+download_files()
 
-if [ ! -f $PYTHON_VERSION.tar.bz2 ] 
-then
-    wget http://www.python.org/ftp/python/2.7.2/$PYTHON_VERSION.tar.bz2
-fi
+install_python() {
+    if [ ! -d $PYTHON_VERSION ]
+    then
+        echo "Extracting tarball..."
+        tar xvfj $PYTHON_VERSION.tar.bz2 > /dev/null
+        echo "Done"
+    fi
 
-if [ ! -f ez_setup.py ] 
-then
-    wget http://peak.telecommunity.com/dist/ez_setup.py
-fi
+    # building python itself..
+    cd $PYTHON_VERSION
+    ./configure --prefix=$PREFIX
+    make
+    make install
+    
+    cd ..
+    
+    # setting environment...
+    cp -f activate_base activate
+    echo -e "export PATH=$PREFIX/bin/:\$PATH\n" >> activate
+    echo -e "export LD_LIBRARY_PATH=$PREFIX/lib/:\$LD_LIBRARY_PATH\n" >> activate
+}
+install_python()
+. activate
 
-if [ ! -f setuptools-0.6c11-py2.7.egg ]
-then
-    wget http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg#md5=fe1f997bc722265116870bc7919059ea
-fi
+#checking:
+echo "Using python binary: `which python`"
+echo "Using easy_install: `which easy_install`"
 
-if [ ! -d $PYTHON_VERSION ]
-then
-    tar xvfj $PYTHON_VERSION.tar.bz2
-fi
-cd $PYTHON_VERSION
-./configure --prefix=$PREFIX
-make
-make install
 
-cd ..
-rm -r $PYTHON_VERSION.tar.bz2
-rm -r $PYTHON_VERSION
+python ez_setup.py
+python ez_setup.py -U setuptools
 
-PATH=$PREFIX/$PYTHON_VERSION/bin/:$PATH
-which python
-exit 1
-$PREFIX/$PYTHON_VERSION/bin/python ez_setup.py
-$PREFIX/$PYTHON_VERSION/bin/python ez_setup.py -U setuptools
 
-# cd $PREFIX/$PYTHON_VERSION/bin
+# installing other modules..
+install_numpy() {
+    echo "Downloading numpy.."
+    if [ -d numpy ]
+    then
+        cd numpy; git pull
+    else
+        git clone git://github.com/numpy/numpy.git > /dev/null
+        cd numpy
+    fi
+    echo "Done"
+    python setup.py build --fcompiler=gnu95
+    python setup.py install
+    cd ..
+    echo "numpy installed"
+}
+install_numpy()
 
-which easy_install # checking..
+easy_installs() {
+    easy_install matplotlib
+    easy_install ipython
+    easy_install scipy
+    easy_install cython
+    easy_install sympy
+    easy_install pyyaml
+    easy_install pexpect
+}
+easy_installs()
 
-easy_install numpy
-easy_install matplotlib
-easy_install ipython
-easy_install scipy
-easy_install cython
-easy_install sympy
-easy_install pyyaml
-easy_install pexpect
-
-cd $PREFIX
-wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux/hdf5-1.8.7-linux-static.tar.gz
-tar xvfz hdf5-1.8.7-linux-static.tar.gz
-cd $PREFIX/$PYTHON_VERSION/bin
-HDF5_DIR=$PREFIX/hdf5-1.8.7-linux-static easy_install h5py
+install_h5py() {
+    if [ ! -d hdf5-1.8.7-linux-static.tar.gz ]
+    then
+        wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux/hdf5-1.8.7-linux-static.tar.gz
+    fi
+    echo "Extracting hdf5..."
+    tar xvfz hdf5-1.8.7-linux-static.tar.gz > /dev/null
+    echo "Done"
+    
+    HDF5_DIR=$PREFIX/ easy_install h5py
+}
 
