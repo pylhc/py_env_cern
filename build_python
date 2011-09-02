@@ -26,7 +26,7 @@ download_files() {
         wget http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
     fi
 }
-download_files()
+download_files
 
 install_python() {
     if [ ! -d $PYTHON_VERSION ]
@@ -49,7 +49,7 @@ install_python() {
     echo -e "export PATH=$PREFIX/bin/:\$PATH\n" >> activate
     echo -e "export LD_LIBRARY_PATH=$PREFIX/lib/:\$LD_LIBRARY_PATH\n" >> activate
 }
-install_python()
+install_python
 . activate
 
 #checking:
@@ -77,7 +77,7 @@ install_numpy() {
     cd ..
     echo "numpy installed"
 }
-install_numpy()
+install_numpy
 
 easy_installs() {
     easy_install matplotlib
@@ -88,7 +88,7 @@ easy_installs() {
     easy_install pyyaml
     easy_install pexpect
 }
-easy_installs()
+easy_installs
 
 install_h5py() {
     if [ ! -d hdf5-1.8.7-linux-static.tar.gz ]
@@ -101,4 +101,6 @@ install_h5py() {
     
     HDF5_DIR=$PREFIX/ easy_install h5py
 }
+install_h5py
+
 
