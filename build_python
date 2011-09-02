@@ -11,20 +11,26 @@ if [ ! -f $PYTHON_VERSION.tar.bz2 ]
 then
     wget http://www.python.org/ftp/python/2.7.2/$PYTHON_VERSION.tar.bz2
 fi
-# if [ ! -f ez_setup.py ] 
-# then
-#     wget http://peak.telecommunity.com/dist/ez_setup.py
-# fi
+
+if [ ! -f ez_setup.py ] 
+then
+    wget http://peak.telecommunity.com/dist/ez_setup.py
+fi
+
 if [ ! -f setuptools-0.6c11-py2.7.egg ]
 then
     wget http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11-py2.7.egg#md5=fe1f997bc722265116870bc7919059ea
 fi
 
-tar xvfj $PYTHON_VERSION.tar.bz2
+if [ ! -d $PYTHON_VERSION ]
+then
+    tar xvfj $PYTHON_VERSION.tar.bz2
+fi
 cd $PYTHON_VERSION
-./configure --prefix=$PREFIX/$PYTHON_VERSION
+./configure --prefix=$PREFIX
 make
 make install
+
 cd ..
 rm -r $PYTHON_VERSION.tar.bz2
 rm -r $PYTHON_VERSION
