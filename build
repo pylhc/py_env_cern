@@ -1,0 +1,35 @@
+#!/bin/bash
+
+PREFIX=/afs/cern.ch/user/y/ylevinse/scratch1/python27
+
+# install python
+PYVER_MAJOR=2.7
+PYVER_MINOR=2
+
+. build_inits
+
+. build_functions
+
+download_files
+
+install_python
+
+. ${PREFIX}/bin/activate
+
+
+python ez_setup.py
+python ez_setup.py -U setuptools
+
+#checking:
+echo "Using python binary: `which python`"
+echo "Using easy_install: `which easy_install`"
+
+
+# installing other modules..
+install_numpy
+
+easy_installs
+
+install_h5py
+
+

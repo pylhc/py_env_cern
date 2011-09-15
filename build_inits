@@ -1,0 +1,8 @@
+#!/bin/env bash
+
+PYVER=${PYVER_MAJOR}.${PYVER_MINOR}
+
+PYTHON_VERSION=Python-${PYVER}
+
+mkdir -p $PREFIX
+

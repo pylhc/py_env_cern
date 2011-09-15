@@ -1,15 +1,5 @@
-#!/bin/bash
+#!/bin/env bash
 
-PREFIX=/afs/cern.ch/user/y/ylevinse/scratch1/python27
-
-# install python
-PYVER_MAJOR=2.7
-PYVER_MINOR=2
-PYVER=${PYVER_MAJOR}.${PYVER_MINOR}
-
-PYTHON_VERSION=Python-${PYVER}
-
-mkdir -p $PREFIX
 download_files() {
     if [ ! -f $PYTHON_VERSION.tar.bz2 ] 
     then
@@ -26,7 +16,7 @@ download_files() {
         wget http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
     fi
 }
-download_files
+
 
 install_python() {
     if [ ! -d $PYTHON_VERSION ]
@@ -48,20 +38,9 @@ install_python() {
     cp -f activate_base activate
     echo -e "export PATH=$PREFIX/bin/:\$PATH\n" >> activate
     echo -e "export LD_LIBRARY_PATH=$PREFIX/lib/:\$LD_LIBRARY_PATH\n" >> activate
+    mv activate ${PREFIX}/bin/
 }
-install_python
-. activate
 
-#checking:
-echo "Using python binary: `which python`"
-echo "Using easy_install: `which easy_install`"
-
-
-python ez_setup.py
-python ez_setup.py -U setuptools
-
-
-# installing other modules..
 install_numpy() {
     echo "Downloading numpy.."
     if [ -d numpy ]
@@ -77,30 +56,29 @@ install_numpy() {
     cd ..
     echo "numpy installed"
 }
-install_numpy
 
 easy_installs() {
     easy_install matplotlib
-    easy_install ipython
+#    easy_install ipython
     easy_install scipy
     easy_install cython
     easy_install sympy
     easy_install pyyaml
     easy_install pexpect
 }
-easy_installs
 
 install_h5py() {
-    if [ ! -d hdf5-1.8.7-linux-static.tar.gz ]
+    easy_install h5py
+    if (( $? != 0 ))
     then
-        wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux/hdf5-1.8.7-linux-static.tar.gz
+        if [ ! -d hdf5-1.8.7-linux-static.tar.gz ]
+        then
+            wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux/hdf5-1.8.7-linux-static.tar.gz
+        fi
+        echo "Extracting hdf5..."
+        tar xvfz hdf5-1.8.7-linux-static.tar.gz > /dev/null
+        echo "Done"
+        
+        HDF5_DIR=$PREFIX/ easy_install h5py
     fi
-    echo "Extracting hdf5..."
-    tar xvfz hdf5-1.8.7-linux-static.tar.gz > /dev/null
-    echo "Done"
-    
-    HDF5_DIR=$PREFIX/ easy_install h5py
 }
-install_h5py
-
-
