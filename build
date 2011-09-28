@@ -14,6 +14,7 @@ download_files
 
 install_python
 
+cd $BUILD_DIR
 . ${PREFIX}/bin/activate
 
 
@@ -24,12 +25,21 @@ python ez_setup.py -U setuptools
 echo "Using python binary: `which python`"
 echo "Using easy_install: `which easy_install`"
 
+# We need some additional libraries in a more
+# modern version..
+install_tcltk
 
 # installing other modules..
+cd $BUILD_DIR
 install_numpy
 
+cd $BUILD_DIR
 easy_installs
 
+cd $BUILD_DIR
 install_h5py
 
+# Finally, we install pymad.. because I want to ;)
+cd $BUILD_DIR
+install_pymad
 
