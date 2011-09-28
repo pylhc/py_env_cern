@@ -115,28 +115,30 @@ install_h5py() {
 }
 
 install_madx() {
+    start=`pwd`
     [ ! -d "madX" ] && svn checkout http://svnweb.cern.ch/guest/madx/trunk/madX/
     cd madX
     svn update
     [ -d "build" ] && rm -rf build
     mkdir build;cd build
     cmake \
-        -DMADX_STATIC=OFF
+        -DMADX_STATIC=OFF \
         -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_INSTALL_PREFIX=${PREFIX} \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         ../
     make install
-    cd ../
+    cd $start
 }
 
 install_pymad() {
+    start=`pwd`
     install_madx
     [ ! -d "pymad" ] && git clone git@github.com:pymad/pymad.git
     cd pymad
     git pull
     cd src
     python setup.py install
-    cd ../../
+    cd $start
 }
 
