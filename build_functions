@@ -15,6 +15,10 @@ download_files() {
     then
         wget http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
     fi
+    if [ ! -e matplotlib-${MPL_VER}.tar.gz ]
+    then 
+        wget http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-${MPL_VER}/matplotlib-${MPL_VER}.tar.gz/download?_test=goal
+    fi
 }
 
 
@@ -41,6 +45,33 @@ install_python() {
     mv activate ${PREFIX}/bin/
 }
 
+install_tcltk() {
+    for f in "tcl${TCLTK_VER} tk${TCLTK_VER}"
+    do
+        if [ ! -e "${f}-src.tar.gz" ]
+        then
+            wget http://prdownloads.sourceforge.net/tcl/${f}-src.tar.gz
+        fi
+        [ -d "${f}" ] && rm -rf $f
+        tar xvfz ${f}-src.tar.gz
+        
+        cd ${f}/unix
+        ./configure --prefix=${PREFIX}
+        make install
+        cd ../../
+    done
+}
+
+install_matplotlib() {
+    if [ -d matplotlib-${MPL_VER} ]
+    then
+        rm -rf matplotlib-${MPL_VER}
+    fi
+    tar xvfz matplotlib-${MPL_VER}.tar.gz
+    cd matplotlib-${MPL_VER}
+    python setup.py install
+
+}
 install_numpy() {
     echo "Downloading numpy.."
     if [ -d numpy ]
@@ -58,9 +89,9 @@ install_numpy() {
 }
 
 easy_installs() {
-    easy_install matplotlib
-#    easy_install ipython
+#    easy_install matplotlib
     easy_install scipy
+    easy_install ipython
     easy_install cython
     easy_install sympy
     easy_install pyyaml
@@ -82,3 +113,30 @@ install_h5py() {
         HDF5_DIR=$PREFIX/ easy_install h5py
     fi
 }
+
+install_madx() {
+    [ ! -d "madX" ] && svn checkout http://svnweb.cern.ch/guest/madx/trunk/madX/
+    cd madX
+    svn update
+    [ -d "build" ] && rm -rf build
+    mkdir build;cd build
+    cmake \
+        -DMADX_STATIC=OFF
+        -DBUILD_SHARED_LIBS=ON \
+        -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        ../
+    make install
+    cd ../
+}
+
+install_pymad() {
+    install_madx
+    [ ! -d "pymad" ] && git clone git@github.com:pymad/pymad.git
+    cd pymad
+    git pull
+    cd src
+    python setup.py install
+    cd ../../
+}
+
