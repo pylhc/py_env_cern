@@ -1,3 +1,6 @@
+These shell scripts will automatically download, compile and install
+python 2.7 along with several useful packages (ipython, numpy, matplotlib...)
+
 Working example can be found here (world read access):
 /afs/cern.ch/work/y/ylevinse/python27
 
