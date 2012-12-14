@@ -161,7 +161,7 @@ install_madx() {
 
 install_pymad() {
     start=`pwd`
-#    install_madx || return $?
+    install_madx || return $?
     if [ ! -d "pymad" ] 
     then
         git clone git://github.com/pymad/pymad.git || return 1
