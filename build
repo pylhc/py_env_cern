@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PREFIX=/afs/cern.ch/user/y/ylevinse/scratch1/python27
+PREFIX=/afs/cern.ch/work/y/ylevinse/python27
 
 # install python
 PYVER_MAJOR=2.7
