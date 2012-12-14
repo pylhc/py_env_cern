@@ -5,7 +5,7 @@ Working example can be found here (world read access):
 /afs/cern.ch/work/y/ylevinse/python27
 
 You can use this by sourcing the activate script:
-$ /afs/cern.ch/work/y/ylevinse/python27/bin/activate
+$ . /afs/cern.ch/work/y/ylevinse/python27/bin/activate
 $ python
 
 ..INSTALLATION..
