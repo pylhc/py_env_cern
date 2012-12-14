@@ -9,5 +9,3 @@ MPL_VER="1.0.1"
 
 BUILD_DIR=`pwd`
 
-mkdir -p $PREFIX
-

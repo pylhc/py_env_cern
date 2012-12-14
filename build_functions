@@ -1,5 +1,10 @@
 #!/bin/env bash
 
+setup_prefix() {
+    mkdir -p $1
+    find $1 -type d -exec fs sa {} system:anyuser rl \;
+}
+
 download_files() {
     if [ ! -f $PYTHON_VERSION.tar.bz2 ] 
     then
