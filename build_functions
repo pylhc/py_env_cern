@@ -37,7 +37,12 @@ install_python() {
 
     # building python itself..
     cd $PYTHON_VERSION
-    ./configure --prefix=$PREFIX
+    ./configure \
+      --enable-shared \
+      --with-threads \
+      --with-system-expat \
+      --with-system-ffi \
+      --prefix=$PREFIX
     make -j3 || return $?
     make install || return $?
     
@@ -173,6 +178,11 @@ install_placet_htgen() {
     [ ! -d "placet-development" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/placet-development/
     cd placet-development
     svn update
+    cd ../
+    [ -d placet-build ] && rm -rf placet-build
+    cp -r placet-development placet-build
+    cd placet-build
+    patch -p0 -i ../placet.01.patch
     ./configure \
         --enable-octave \
         --enable-python \

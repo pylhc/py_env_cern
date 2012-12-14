@@ -1,0 +1,13 @@
+Index: src-interfaces/Makefile
+===================================================================
+--- src-interfaces/Makefile	(revision 2116)
++++ src-interfaces/Makefile	(working copy)
+@@ -13,7 +13,7 @@
+ 
+ _placet_python.so: placet_python_wrap.o placet_api_client.o
+ 	@echo "Creating Python module ..."
+-	@g++ -shared placet_python_wrap.o placet_api_client.o `$(PYTHON_CONFIG) --libs` $(GSL_LDFLAGS) -o _placet_python.so
++	@g++ -shared placet_python_wrap.o placet_api_client.o -L`$(PYTHON_CONFIG) --prefix`/lib `$(PYTHON_CONFIG) --ldflags` $(GSL_LDFLAGS) -o _placet_python.so
+ 
+ placet_python_wrap.o: placet_python_wrap.cc
+ 	@g++ -fpic $(subst -Wall, , $(CFLAGS)) `$(PYTHON_CONFIG) --includes` $(NUMPY_INCLUDES) -O3 -c placet_python_wrap.cc
