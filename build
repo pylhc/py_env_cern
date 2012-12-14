@@ -2,9 +2,6 @@
 
 PREFIX=/afs/cern.ch/work/y/ylevinse/python27
 
-# set afs access rights etc..
-setup_prefix $PREFIX
-
 # install python
 PYVER_MAJOR=2.7
 PYVER_MINOR=2
@@ -12,6 +9,9 @@ PYVER_MINOR=2
 . build_inits
 
 . build_functions
+
+# set afs access rights etc..
+setup_prefix $PREFIX
 
 download_files || exit 1
 
