@@ -38,8 +38,8 @@ install_python() {
     # building python itself..
     cd $PYTHON_VERSION
     ./configure --prefix=$PREFIX
-    make
-    make install
+    make -j3 || return $?
+    make install || return $?
     
     cd ..
     
@@ -51,19 +51,22 @@ install_python() {
 }
 
 install_tcltk() {
-    for f in "tcl${TCLTK_VER} tk${TCLTK_VER}"
+    start=`pwd`
+    for f in tcl tk
     do
-        if [ ! -e "${f}-src.tar.gz" ]
+        cd $start
+	fver=$f${TCLTK_VER}
+        if [ ! -e "${fver}-src.tar.gz" ]
         then
-            wget http://prdownloads.sourceforge.net/tcl/${f}-src.tar.gz
+            wget http://downloads.sourceforge.net/sourceforge/tcl/${fver}-src.tar.gz || return $?
         fi
-        [ -d "${f}" ] && rm -rf $f
-        tar xvfz ${f}-src.tar.gz
+        [ -d "${fver}" ] && rm -rf $fver
+        tar xvfz ${fver}-src.tar.gz
         
-        cd ${f}/unix
+        cd ${fver}/unix
         ./configure --prefix=${PREFIX}
-        make install
-        cd ../../
+        make install || return $?
+        cd $start
     done
 }
 
@@ -74,7 +77,7 @@ install_matplotlib() {
     fi
     tar xvfz matplotlib-${MPL_VER}.tar.gz
     cd matplotlib-${MPL_VER}
-    python setup.py install
+    python setup.py install || return $?
 
 }
 install_numpy() {
@@ -94,7 +97,7 @@ install_numpy() {
 }
 
 easy_installs() {
-#    easy_install matplotlib
+    easy_install matplotlib
     easy_install scipy
     easy_install ipython
     easy_install cython
@@ -147,14 +150,17 @@ install_madx() {
         -DCMAKE_INSTALL_PREFIX=${PREFIX} \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         ../
-    make install
+    make install || return $?
     cd $start
 }
 
 install_pymad() {
     start=`pwd`
-    install_madx
-    [ ! -d "pymad" ] && git clone git@github.com:pymad/pymad.git
+#    install_madx || return $?
+    if [ ! -d "pymad" ] 
+    then
+        git clone git://github.com/pymad/pymad.git || return 1
+    fi
     cd pymad
     git pull
     cd src
@@ -162,3 +168,30 @@ install_pymad() {
     cd $start
 }
 
+install_placet_htgen() {
+    start=`pwd`
+    [ ! -d "placet-development" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/placet-development/
+    cd placet-development
+    svn update
+    ./configure \
+        --enable-octave \
+        --enable-python \
+        --with-python=python${PYVER_MAJOR} \
+        --with-pyconfig=python${PYVER_MAJOR}-config \
+        --prefix=$PREFIX
+    cd $start
+    [ ! -d "HTGEN" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/HTGEN/
+    cd HTGEN
+    svn update
+    make PLACET_DIR=$start/placet-development install INSTALL_PREFIX=$PREFIX || return 1
+    cd $start/placet-development
+    ./configure \
+        --enable-htgen \
+        --enable-octave \
+        --enable-python \
+        --with-python=python${PYVER_MAJOR} \
+        --with-pyconfig=python${PYVER_MAJOR}-config \
+        --prefix=$PREFIX
+    make install || return 1
+    cd $start
+}
