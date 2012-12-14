@@ -1,0 +1,17 @@
+Working example can be found here (world read access):
+/afs/cern.ch/work/y/ylevinse/python27
+
+You can use this by sourcing the activate script:
+$ /afs/cern.ch/work/y/ylevinse/python27/bin/activate
+$ python
+
+..INSTALLATION..
+The basic setup is:
+
+./build
+
+This should in principle build all needed packages..
+
+If you are not Yngve you should at the moment set the PREFIX variable:
+
+PREFIX=$HOME/python27 ./build
