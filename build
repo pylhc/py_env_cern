@@ -2,6 +2,9 @@
 
 PREFIX=/afs/cern.ch/work/y/ylevinse/python27
 
+# set afs access rights etc..
+setup_prefix $PREFIX
+
 # install python
 PYVER_MAJOR=2.7
 PYVER_MINOR=2
@@ -10,16 +13,16 @@ PYVER_MINOR=2
 
 . build_functions
 
-download_files
+download_files || exit 1
 
-install_python
+install_python || exit 1
 
 cd $BUILD_DIR
 . ${PREFIX}/bin/activate
 
 
-python ez_setup.py
-python ez_setup.py -U setuptools
+python ez_setup.py || exit 1
+python ez_setup.py -U setuptools || exit 1
 
 #checking:
 echo "Using python binary: `which python`"
@@ -27,19 +30,19 @@ echo "Using easy_install: `which easy_install`"
 
 # We need some additional libraries in a more
 # modern version..
-install_tcltk
+install_tcltk || exit 1
 
 # installing other modules..
 cd $BUILD_DIR
-install_numpy
+install_numpy || exit 1
 
 cd $BUILD_DIR
-easy_installs
+easy_installs || exit 1
 
 cd $BUILD_DIR
-install_h5py
+install_h5py || exit 1
 
 # Finally, we install pymad.. because I want to ;)
 cd $BUILD_DIR
-install_pymad
+install_pymad || exit 1
 
