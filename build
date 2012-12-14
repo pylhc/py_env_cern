@@ -2,6 +2,9 @@
 
 [ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/python27
 
+
+[ "${GCC_SETUP}" == "" ] && GCC_SETUP=gcc47-slc5-setup.sh
+
 # install python
 PYVER_MAJOR=2.7
 PYVER_MINOR=2

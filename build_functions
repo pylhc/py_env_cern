@@ -1,7 +1,9 @@
 #!/bin/env bash
 
 setup_prefix() {
-    mkdir -p $1
+    mkdir -p $1/bin
+    mkdir -p $1/lib
+    [ "${GCC_SETUP}" != "" ] && cp ${GCC_SETUP} $1/bin/
     find $1 -type d -exec fs sa {} system:anyuser rl \;
 }
 
@@ -52,6 +54,7 @@ install_python() {
     cp -f activate_base activate
     echo -e "export PATH=$PREFIX/bin/:\$PATH\n" >> activate
     echo -e "export LD_LIBRARY_PATH=$PREFIX/lib/:\$LD_LIBRARY_PATH\n" >> activate
+    [ "${GCC_SETUP}" != "" ] && echo -e ". ${PREFIX}/bin/${GCC_SETUP}" >> activate
     mv activate ${PREFIX}/bin/
 }
 
