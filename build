@@ -1,13 +1,13 @@
 #!/bin/bash
 
-[ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/python27
+[ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/public/venv_py27_slc6
 
 
 [ "${GCC_SETUP}" == "" ] && GCC_SETUP=gcc47-slc5-setup.sh
 
 # install python
 PYVER_MAJOR=2.7
-PYVER_MINOR=2
+PYVER_MINOR=4
 
 . build_inits
 
@@ -32,8 +32,8 @@ echo "Using python binary: `which python`"
 echo "Using easy_install: `which easy_install`"
 
 # We need some additional libraries in a more
-# modern version..
-install_tcltk || exit 1
+# modern version.. Not for SLC6?
+# install_tcltk || exit 1
 
 # installing other modules..
 cd $BUILD_DIR

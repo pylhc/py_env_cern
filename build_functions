@@ -130,9 +130,6 @@ install_hdf5() {
 }
 install_h5py() {
     start=`pwd`
-    HDF5_VER=1.8.7
-    H5PY_VER=2.0.1
-#   install_hdf5
 
 #   easy_install h5py
    [ ! -d h5py-${H5PY_VER}.tar.gz ] && wget http://h5py.googlecode.com/files/h5py-${H5PY_VER}.tar.gz
