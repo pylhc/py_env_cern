@@ -3,7 +3,7 @@
 setup_prefix() {
     mkdir -p $1/bin
     mkdir -p $1/lib
-    [ "${GCC_SETUP}" != "" ] && cp ${GCC_SETUP} $1/bin/
+    [ "${SETUP_COMPILER}" != "" ] && cp ${SETUP_COMPILER} $1/bin/
     find $1 -type d -exec fs sa {} system:anyuser rl \;
 }
 
@@ -54,7 +54,7 @@ install_python() {
     cp -f activate_base activate
     echo -e "export PATH=$PREFIX/bin/:\$PATH\n" >> activate
     echo -e "export LD_LIBRARY_PATH=$PREFIX/lib/:\$LD_LIBRARY_PATH\n" >> activate
-    [ "${GCC_SETUP}" != "" ] && echo -e ". ${PREFIX}/bin/${GCC_SETUP}" >> activate
+    [ "${SETUP_COMPILER}" != "" ] && echo -e ". ${PREFIX}/bin/${SETUP_COMPILER} ${SETUP_ARGS}" >> activate
     mv activate ${PREFIX}/bin/
 }
 
@@ -90,15 +90,13 @@ install_matplotlib() {
 }
 install_numpy() {
     echo "Downloading numpy.."
-    if [ -d numpy ]
-    then
-        cd numpy; git pull
-    else
-        git clone git://github.com/numpy/numpy.git > /dev/null
-        cd numpy
-    fi
+    NUMPY_VER=1.6.2
+    [ -f numpy-${NUMPY_VER}.tar.gz ] || wget "http://downloads.sourceforge.net/numpy/numpy-${NUMPY_VER}.tar.gz"
     echo "Done"
-    python setup.py build --fcompiler=gnu95
+    [ -d numpy-${NUMPY_VER} ] && rm -rf numpy-${NUMPY_VER}
+    tar -xzf numpy-${NUMPY_VER}.tar.gz
+    cd numpy-${NUMPY_VER}
+    python setup.py build # --fcompiler=gnu95
     python setup.py install
     cd ..
     echo "numpy installed"
@@ -175,33 +173,30 @@ install_pymad() {
 
 install_placet_htgen() {
     start=`pwd`
-    [ ! -d "placet-development" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/placet-development/
-    cd placet-development
-    svn update
-    cd ../
+    [ ! -d "placet" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/placet
+    cd placet
+    svn update || return $?
+    cd $start
     [ -d placet-build ] && rm -rf placet-build
-    cp -r placet-development placet-build
+    cp -r placet placet-build
     cd placet-build
-    patch -p0 -i ../placet.01.patch
-    ./configure \
+    CC=gcc CXX=g++ ./configure \
         --enable-octave \
         --enable-python \
         --with-python=python${PYVER_MAJOR} \
-        --with-pyconfig=python${PYVER_MAJOR}-config \
-        --prefix=$PREFIX
+        --prefix=$PREFIX || return $?
     cd $start
     [ ! -d "HTGEN" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/HTGEN/
     cd HTGEN
-    svn update
-    make PLACET_DIR=$start/placet-development install INSTALL_PREFIX=$PREFIX || return 1
-    cd $start/placet-development
-    ./configure \
+    svn update || return $?
+    make PLACET_DIR=$start/placet-build install INSTALL_PREFIX=$PREFIX || return 1
+    cd $start/placet-build
+    CC=gcc CXX=g++ HTGEN_DIR=${PREFIX} ./configure \
         --enable-htgen \
         --enable-octave \
         --enable-python \
-        --with-python=python${PYVER_MAJOR} \
-        --with-pyconfig=python${PYVER_MAJOR}-config \
-        --prefix=$PREFIX
+        --with-pydir=${PREFIX} \
+        --prefix=$PREFIX || return $?
     make install || return 1
     cd $start
 }

@@ -3,7 +3,8 @@
 [ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/public/venv_py27_slc6
 
 
-[ "${GCC_SETUP}" == "" ] && GCC_SETUP=gcc47-slc5-setup.sh
+[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=IntelCompilers.sh && SETUP_ARGS=intel64
+#[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=gcc47-slc5-setup.sh
 
 # install python
 PYVER_MAJOR=2.7
@@ -14,18 +15,18 @@ PYVER_MINOR=4
 . build_functions
 
 # set afs access rights etc..
-setup_prefix $PREFIX
-
-download_files || exit 1
-
-install_python || exit 1
+#setup_prefix $PREFIX
+#
+#download_files || exit 1
+#
+#install_python || exit 1
 
 cd $BUILD_DIR
 . ${PREFIX}/bin/activate
 
 
-python ez_setup.py || exit 1
-python ez_setup.py -U setuptools || exit 1
+#python ez_setup.py || exit 1
+#python ez_setup.py -U setuptools || exit 1
 
 #checking:
 echo "Using python binary: `which python`"
@@ -37,13 +38,13 @@ echo "Using easy_install: `which easy_install`"
 
 # installing other modules..
 cd $BUILD_DIR
-install_numpy || exit 1
+#install_numpy || exit 1
 
 cd $BUILD_DIR
-easy_installs || exit 1
+#easy_installs || exit 1
 
 cd $BUILD_DIR
-install_h5py || exit 1
+#install_h5py || exit 1
 
 # Install PLACET/HTGEN
 install_placet_htgen || exit 1
