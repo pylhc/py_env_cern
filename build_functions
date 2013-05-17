@@ -180,7 +180,7 @@ install_placet_htgen() {
     [ -d placet-build ] && rm -rf placet-build
     cp -r placet placet-build
     cd placet-build
-    CC=gcc CXX=g++ ./configure \
+    ./configure \
         --enable-octave \
         --enable-python \
         --with-python=python${PYVER_MAJOR} \
@@ -191,7 +191,7 @@ install_placet_htgen() {
     svn update || return $?
     make PLACET_DIR=$start/placet-build install INSTALL_PREFIX=$PREFIX || return 1
     cd $start/placet-build
-    CC=gcc CXX=g++ HTGEN_DIR=${PREFIX} ./configure \
+    HTGEN_DIR=${PREFIX} ./configure \
         --enable-htgen \
         --enable-octave \
         --enable-python \
@@ -199,4 +199,31 @@ install_placet_htgen() {
         --prefix=$PREFIX || return $?
     make install || return 1
     cd $start
+}
+
+install_fftw3() {
+    start=`pwd`
+    wget http://www.fftw.org/fftw-${FFTW_VER}.tar.gz
+    [ ! -f fftw-${FFTW_VER}.tar.gz ] && tar xzf fftw-${FFTW_VER}.tar.gz 
+    cd fftw-${FFTW_VER}/
+    ./configure \
+       --enable-avx \
+       --enable-openmp \
+       --prefix=${PREFIX}
+    make -j${NPROCS}
+    make install
+    cd ${start}
+}
+
+install_guineapig() {
+    [ ! -d guinea-pig ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/guinea-pig
+    cd guinea-pig/
+    svn up
+    [ -d build ] && rm -rf build
+    mkdir build
+    cd build
+    cmake ../
+    FFTWDIR=${PREFIX} /usr/bin/cmake28 -DCMAKE_INSTALL_PREFIX=${PREFIX} ..
+    make -j${NPROCS}
+    make install
 }

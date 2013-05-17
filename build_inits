@@ -11,5 +11,10 @@ TCLTK_VER=8.5.7
 MPL_VER="1.2.1"
 H5PY_VER=2.1.3
 
+FFTW_VER=3.3.3
+
+# Number of processors to use in parallell make
+NPROCS=1
+
 BUILD_DIR=`pwd`
 
