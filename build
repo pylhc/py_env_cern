@@ -1,14 +1,15 @@
 #!/bin/bash
 
-[ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/public/venv_py27_slc6
+#[ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/public/venv_py27_slc6
+[ "${PREFIX}" == "" ] && PREFIX=/afs/cern.ch/work/y/ylevinse/public/venv_py27_slc6_gcc
 
 
-[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=IntelCompilers.sh && SETUP_ARGS=intel64
-#[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=gcc47-slc5-setup.sh
+#[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=IntelCompilers.sh && SETUP_ARGS=intel64
+[ "${SETUP_COMPILER}" == "" ] && SETUP_COMPILER=gcc48-slc6-setup.sh
 
 # install python
 PYVER_MAJOR=2.7
-PYVER_MINOR=4
+PYVER_MINOR=5
 
 . build_inits
 
@@ -48,6 +49,10 @@ install_h5py || exit 1
 
 # Install PLACET/HTGEN
 install_placet_htgen || exit 1
+
+# Install pyevolve
+cd $BUILD_DIR
+install_pyevolve || exit 1
 
 # Finally, we install pymad.. because I want to ;)
 cd $BUILD_DIR

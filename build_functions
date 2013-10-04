@@ -20,7 +20,7 @@ download_files() {
     
     if [ ! -f setuptools-0.6c11-py${PYVER_MAJOR}.egg ]
     then
-        wget http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
+        wget --no-check-certificate http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
     fi
     if [ ! -e matplotlib-${MPL_VER}.tar.gz ]
     then 
@@ -203,8 +203,8 @@ install_placet_htgen() {
 
 install_fftw3() {
     start=`pwd`
-    wget http://www.fftw.org/fftw-${FFTW_VER}.tar.gz
-    [ ! -f fftw-${FFTW_VER}.tar.gz ] && tar xzf fftw-${FFTW_VER}.tar.gz 
+    [ ! -f fftw-${FFTW_VER}.tar.gz ] && wget http://www.fftw.org/fftw-${FFTW_VER}.tar.gz
+    tar xzf fftw-${FFTW_VER}.tar.gz 
     cd fftw-${FFTW_VER}/
     ./configure \
        --enable-avx \
@@ -226,4 +226,13 @@ install_guineapig() {
     FFTWDIR=${PREFIX} /usr/bin/cmake28 -DCMAKE_INSTALL_PREFIX=${PREFIX} ..
     make -j${NPROCS}
     make install
+}
+
+install_pyevolve() {
+  PYEVOLVE_VER=0.6rc1
+  [ ! -f Pyevolve-${PYEVOLVE_VER}.tar.gz ] && wget http://ufpr.dl.sourceforge.net/project/pyevolve/Pyevolve/${PYEVOLVE_VER}/Pyevolve-${PYEVOLVE_VER}.tar.gz
+  tar -xzf Pyevolve-${PYEVOLVE_VER}.tar.gz 
+  cd Pyevolve-${PYEVOLVE_VER}/
+  python setup.py build
+  python setup.py install
 }
