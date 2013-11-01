@@ -110,6 +110,7 @@ easy_installs() {
     easy_install sympy
     easy_install pyyaml
     easy_install pexpect
+    easy_install deap
 }
 
 install_hdf5() {
