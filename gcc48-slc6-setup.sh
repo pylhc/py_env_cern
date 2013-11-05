@@ -22,3 +22,8 @@ export LD_LIBRARY_PATH=${LCG_gcc_home}/${LCG_lib_name}:${LCG_mpfr_home}/lib:${LC
 else
 export LD_LIBRARY_PATH=${LCG_gcc_home}/${LCG_lib_name}:${LCG_mpfr_home}/lib:${LCG_gmp_home}/lib
 fi
+
+# Set default compilers for current environment:
+export CC=gcc
+export CXX=g++
+export FC=gfortran
