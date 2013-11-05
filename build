@@ -50,6 +50,9 @@ install_h5py || exit 1
 # Install PLACET/HTGEN
 install_placet_htgen || exit 1
 
+# Install GUINEA-PIG
+install_guineapig || exit 1
+
 # Install pyevolve
 cd $BUILD_DIR
 install_pyevolve || exit 1
