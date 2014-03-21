@@ -24,7 +24,11 @@ download_files() {
     fi
     if [ ! -e matplotlib-${MPL_VER}.tar.gz ]
     then 
-        wget http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-${MPL_VER}/matplotlib-${MPL_VER}.tar.gz/download?_test=goal
+        wget http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-${MPL_VER}/matplotlib-${MPL_VER}.tar.gz/download?_test=goal -o matplotlib-${MPL_VER}.tar.gz
+    fi
+    if [ ! -e scipy-${SCIPY_VER}.tar.gz ]
+    then 
+        wget http://sourceforge.net/projects/scipy/files/scipy/${SCIPY_VER}/scipy-${SCIPY_VER}.tar.gz/download -o scipy-${SCIPY_VER}.tar.gz
     fi
 }
 
@@ -192,7 +196,7 @@ install_placet_htgen() {
     svn update || return $?
     make PLACET_DIR=$start/placet-build install INSTALL_PREFIX=$PREFIX || return 1
     cd $start/placet-build
-    HTGEN_DIR=${PREFIX} ./configure \
+    LDFLAGS='-static-libstdc++ -static-libgcc' HTGEN_DIR=${PREFIX} ./configure \
         --enable-htgen \
         --enable-octave \
         --enable-python \
