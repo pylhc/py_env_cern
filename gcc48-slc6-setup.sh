@@ -5,10 +5,7 @@ LCGPLAT=x86_64-slc6-gcc48-opt
 LCG_lib_name=lib64
 LCG_arch=x86_64
 
-if [ -z $1 ] 
-then LCG_contdir=/afs/cern.ch/sw/lcg/contrib
-else LCG_contdir=$1 
-fi
+LCG_contdir=/afs/cern.ch/sw/lcg/contrib
 LCG_gcc_home=${LCG_contdir}/gcc/${gcc_config_version}/${LCGPLAT}
 LCG_mpfr_home=${LCG_contdir}/mpfr/${mpfr_config_version}/${LCGPLAT}
 LCG_gmp_home=${LCG_contdir}/gmp/${gmp_config_version}/${LCGPLAT}
