@@ -57,17 +57,17 @@ install_python() {
 }
 
 pip_installs() {
-    pip install --upgrade numpy || exit $?
-    pip install --upgrade matplotlib || exit $?
-    pip install --upgrade scipy || exit $?
-    pip install --upgrade ipython || exit $?
-    pip install --upgrade cython || exit $?
-    pip install --upgrade sympy || exit $?
-    pip install --upgrade pyyaml || exit $?
-    pip install --upgrade pexpect || exit $?
-    pip install --upgrade deap || exit $?
-    pip install --upgrade h5py || exit $?
-    pip install --upgrade PyYAML || exit $?
+    pip install --upgrade numpy      || return $?
+    pip install --upgrade matplotlib || return $?
+    pip install --upgrade scipy      || return $?
+    pip install --upgrade ipython    || return $?
+    pip install --upgrade cython     || return $?
+    pip install --upgrade sympy      || return $?
+    pip install --upgrade pyyaml     || return $?
+    pip install --upgrade pexpect    || return $?
+    pip install --upgrade deap       || return $?
+    pip install --upgrade h5py       || return $?
+    pip install --upgrade PyYAML     || return $?
 }
 
 install_madx() {
