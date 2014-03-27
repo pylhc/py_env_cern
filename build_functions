@@ -95,7 +95,6 @@ install_pymad() {
     fi
     cd pymad
     git pull
-    cd src
     python setup.py install
     cd $start
 }
