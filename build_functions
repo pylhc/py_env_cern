@@ -12,23 +12,17 @@ download_files() {
     then
         wget http://www.python.org/ftp/python/${PYVER}/$PYTHON_VERSION.tar.bz2
     fi
-    
-    if [ ! -f ez_setup.py ] 
-    then
-        wget http://peak.telecommunity.com/dist/ez_setup.py
-    fi
-    
-    if [ ! -f setuptools-0.6c11-py${PYVER_MAJOR}.egg ]
-    then
-        wget --no-check-certificate http://pypi.python.org/packages/${PYVER_MAJOR}/s/setuptools/setuptools-0.6c11-py${PYVER_MAJOR}.egg#md5=fe1f997bc722265116870bc7919059ea
-    fi
-    if [ ! -e matplotlib-${MPL_VER}.tar.gz ]
-    then 
-        wget http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-${MPL_VER}/matplotlib-${MPL_VER}.tar.gz/download?_test=goal -o matplotlib-${MPL_VER}.tar.gz
-    fi
+
     if [ ! -e scipy-${SCIPY_VER}.tar.gz ]
     then 
-        wget http://sourceforge.net/projects/scipy/files/scipy/${SCIPY_VER}/scipy-${SCIPY_VER}.tar.gz/download -o scipy-${SCIPY_VER}.tar.gz
+        wget \
+         http://sourceforge.net/projects/scipy/files/scipy/${SCIPY_VER}/scipy-${SCIPY_VER}.tar.gz/download \
+         -o scipy-${SCIPY_VER}.tar.gz
+    fi
+
+    if [ ! -f get-pip.py ]
+    then
+        wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
     fi
 }
 
@@ -106,15 +100,17 @@ install_numpy() {
     echo "numpy installed"
 }
 
-easy_installs() {
-    easy_install matplotlib
-    easy_install scipy
-    easy_install ipython
-    easy_install cython
-    easy_install sympy
-    easy_install pyyaml
-    easy_install pexpect
-    easy_install deap
+pip_installs() {
+    pip install --upgrade numpy || exit $?
+    pip install --upgrade matplotlib || exit $?
+    pip install --upgrade scipy || exit $?
+    pip install --upgrade ipython || exit $?
+    pip install --upgrade cython || exit $?
+    pip install --upgrade sympy || exit $?
+    pip install --upgrade pyyaml || exit $?
+    pip install --upgrade pexpect || exit $?
+    pip install --upgrade deap || exit $?
+    pip install --upgrade h5py || exit $?
 }
 
 install_hdf5() {

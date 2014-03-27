@@ -18,20 +18,20 @@ PYVER_MINOR=5
 # set afs access rights etc..
 setup_prefix $PREFIX
 
-download_files || exit 1
+download_files || exit $?
+install_python || exit $?
 
-install_python || exit 1
+
 
 cd $BUILD_DIR
 . ${PREFIX}/bin/activate
 
-
-python ez_setup.py || exit 1
-python ez_setup.py -U setuptools || exit 1
+python get-pip.py || exit $?
+pip install setuptools || exit $?
 
 #checking:
 echo "Using python binary: `which python`"
-echo "Using easy_install: `which easy_install`"
+echo "Using pip: `which pip`"
 
 # We need some additional libraries in a more
 # modern version.. Not for SLC6?
@@ -39,13 +39,7 @@ echo "Using easy_install: `which easy_install`"
 
 # installing other modules..
 cd $BUILD_DIR
-install_numpy || exit 1
-
-cd $BUILD_DIR
-easy_installs || exit 1
-
-cd $BUILD_DIR
-install_h5py || exit 1
+pip_installs || exit $?
 
 # Install PLACET/HTGEN
 install_placet_htgen || exit 1
