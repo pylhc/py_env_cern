@@ -67,6 +67,7 @@ pip_installs() {
     pip install --upgrade pexpect || exit $?
     pip install --upgrade deap || exit $?
     pip install --upgrade h5py || exit $?
+    pip install --upgrade PyYAML || exit $?
 }
 
 install_madx() {
