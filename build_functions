@@ -77,7 +77,7 @@ install_madx() {
     svn update
     [ -d "build" ] && rm -rf build
     mkdir build;cd build
-    cmake \
+    /usr/bin/cmake28 \
         -DMADX_STATIC=OFF \
         -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_INSTALL_PREFIX=${PREFIX} \
@@ -102,6 +102,7 @@ install_pymad() {
 
 install_placet_htgen() {
     start=`pwd`
+
     [ ! -d "placet" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/placet
     cd placet
     svn update || return $?
@@ -109,16 +110,26 @@ install_placet_htgen() {
     [ -d placet-build ] && rm -rf placet-build
     svn export placet placet-build
     cd placet-build
+
+    # first we configure placet (HTGEN needs some headers)
     ./configure \
         --enable-octave \
         --enable-python \
         --with-python=python${PYVER_MAJOR} \
         --prefix=$PREFIX || return $?
+
+    # now we build HTGEN
     cd $start
     [ ! -d "HTGEN" ] && svn co http://svnweb.cern.ch/guest/clicsw/trunk/HTGEN/
     cd HTGEN
     svn update || return $?
-    make PLACET_DIR=$start/placet-build install INSTALL_PREFIX=$PREFIX || return 1
+    [ -d build ] && rm -rf build
+    mkdir build
+    cd build
+    PLACET_DIR=$start/placet-build /usr/bin/cmake28 -DCMAKE_INSTALL_PREFIX=$PREFIX .. || exit $?
+    make install || exit $?
+
+    # then we build placet including htgen interface
     cd $start/placet-build
     LDFLAGS='-static-libstdc++ -static-libgcc' HTGEN_DIR=${PREFIX} ./configure \
         --enable-htgen \
@@ -152,7 +163,6 @@ install_guineapig() {
     [ -d build ] && rm -rf build
     mkdir build
     cd build
-    cmake ../
     FFTWDIR=${PREFIX} /usr/bin/cmake28 -DCMAKE_INSTALL_PREFIX=${PREFIX} ..
     make -j${NPROCS}
     make install
