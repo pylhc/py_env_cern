@@ -56,50 +56,6 @@ install_python() {
     mv activate ${PREFIX}/bin/
 }
 
-install_tcltk() {
-    start=`pwd`
-    for f in tcl tk
-    do
-        cd $start
-	fver=$f${TCLTK_VER}
-        if [ ! -e "${fver}-src.tar.gz" ]
-        then
-            wget http://downloads.sourceforge.net/sourceforge/tcl/${fver}-src.tar.gz || return $?
-        fi
-        [ -d "${fver}" ] && rm -rf $fver
-        tar xvfz ${fver}-src.tar.gz
-        
-        cd ${fver}/unix
-        ./configure --prefix=${PREFIX}
-        make install || return $?
-        cd $start
-    done
-}
-
-install_matplotlib() {
-    if [ -d matplotlib-${MPL_VER} ]
-    then
-        rm -rf matplotlib-${MPL_VER}
-    fi
-    tar xvfz matplotlib-${MPL_VER}.tar.gz
-    cd matplotlib-${MPL_VER}
-    python setup.py install || return $?
-
-}
-install_numpy() {
-    echo "Downloading numpy.."
-    NUMPY_VER=1.6.2
-    [ -f numpy-${NUMPY_VER}.tar.gz ] || wget "http://downloads.sourceforge.net/numpy/numpy-${NUMPY_VER}.tar.gz"
-    echo "Done"
-    [ -d numpy-${NUMPY_VER} ] && rm -rf numpy-${NUMPY_VER}
-    tar -xzf numpy-${NUMPY_VER}.tar.gz
-    cd numpy-${NUMPY_VER}
-    python setup.py build # --fcompiler=gnu95
-    python setup.py install
-    cd ..
-    echo "numpy installed"
-}
-
 pip_installs() {
     pip install --upgrade numpy || exit $?
     pip install --upgrade matplotlib || exit $?
