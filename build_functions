@@ -113,34 +113,6 @@ pip_installs() {
     pip install --upgrade h5py || exit $?
 }
 
-install_hdf5() {
-   h5_fname=hdf5-${H5VER}-linux-x86_64-shared
-   [ ! -e "${h5_fname}.tar.gz" ] && wget http://www.hdfgroup.org/ftp/HDF5/current/bin/linux-x86_64/${h5_fname}.tar.gz
-   [ -d "${h5_fname}" ] && rm -rf ${h5_name}
-   echo "Extracting hdf5..."
-   tar xvfz ${h5_fname}.tar.gz > /dev/null
-   echo "Copying files.."
-   for d in bin lib include share
-   do
-       echo "Moving $d"
-       [ ! -d ${PREFIX}/$d ] && mkdir -p ${PREFIX}/$d
-       mv ${h5_fname}/$d/* ${PREFIX}/$d/
-   done
-}
-install_h5py() {
-    start=`pwd`
-
-#   easy_install h5py
-   [ ! -d h5py-${H5PY_VER}.tar.gz ] && wget http://h5py.googlecode.com/files/h5py-${H5PY_VER}.tar.gz
-   echo "Extracting h5py.."
-   tar xvfz h5py-${H5PY_VER}.tar.gz > /dev/null
-   cd h5py-${H5PY_VER}
-   python setup.py build --hdf5=$PREFIX
-   python setup.py install
-   cd $start
-   echo "Done"
-}
-
 install_madx() {
     start=`pwd`
     [ ! -d "madX" ] && svn checkout http://svnweb.cern.ch/guest/madx/trunk/madX/
