@@ -38,16 +38,16 @@ cd $BUILD_DIR
 pip_installs || exit $?
 
 # Install PLACET/HTGEN
-install_placet_htgen || exit 1
+install_placet_htgen || exit $?
 
 # Install GUINEA-PIG
-install_guineapig || exit 1
+install_guineapig || exit $?
 
 # Install pyevolve
 cd $BUILD_DIR
-install_pyevolve || exit 1
+install_pyevolve || exit $?
 
-# Finally, we install pymad.. because I want to ;)
+# Finally, we install pymad.. also installs mad-x internally
 cd $BUILD_DIR
-install_pymad || exit 1
+install_pymad || exit $?
 
