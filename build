@@ -33,10 +33,6 @@ pip install setuptools || exit $?
 echo "Using python binary: `which python`"
 echo "Using pip: `which pip`"
 
-# We need some additional libraries in a more
-# modern version.. Not for SLC6?
-# install_tcltk || exit 1
-
 # installing other modules..
 cd $BUILD_DIR
 pip_installs || exit $?
